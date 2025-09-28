@@ -14,7 +14,7 @@ import {
   Calendar,
   User,
   AlertTriangle,
-  Tooth,
+  Clipboard,
   Eye,
   Download,
   Clock
@@ -213,7 +213,7 @@ export default function PatientMedicalHistoryPage() {
                         </span>
                         {record.toothChart && (
                           <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full flex items-center">
-                            <Tooth className="h-3 w-3 mr-1" />
+                            <Clipboard className="h-3 w-3 mr-1" />
                             Dente {record.toothChart}
                           </span>
                         )}
