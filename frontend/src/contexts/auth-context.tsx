@@ -97,7 +97,7 @@ const rolePermissions: Record<UserRole, string[]> = {
 };
 
 // Usuários mock para demonstração
-const mockUsers: User[] = [
+export const mockUsers: User[] = [
   {
     id: "1",
     name: "Dev Master",

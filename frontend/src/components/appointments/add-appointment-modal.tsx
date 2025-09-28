@@ -1,26 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/auth-context";
 import { Calendar, Clock, User, FileText } from "lucide-react";
 
 interface AddAppointmentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (appointment: any) => void;
+  doctors: any[];
+  date?: string;
+  time?: string;
 }
 
-export function AddAppointmentModal({ isOpen, onClose, onSave }: AddAppointmentModalProps) {
+export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, date, time }: AddAppointmentModalProps) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     patient: "",
-    date: "",
-    time: "",
+    date: date || "",
+    time: time || "",
     duration: "60",
     type: "Avaliação Inicial",
-    doctor: "Dr. Carlos Dentista",
+    doctor: user?.role === 'medico' ? user.name : "",
     notes: ""
   });
+
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      date: date || "",
+      time: time || "",
+      doctor: user?.role === 'medico' ? user.name : ""
+    }));
+  }, [date, time, user]);
 
   const patients = [
     "Maria Silva",
@@ -58,7 +72,7 @@ export function AddAppointmentModal({ isOpen, onClose, onSave }: AddAppointmentM
       time: formData.time,
       duration: parseInt(formData.duration),
       type: formData.type,
-      status: "Confirmado",
+      status: "Aguardando",
       doctor: formData.doctor,
       notes: formData.notes
     };
@@ -71,7 +85,7 @@ export function AddAppointmentModal({ isOpen, onClose, onSave }: AddAppointmentM
       time: "",
       duration: "60",
       type: "Consulta",
-      doctor: "Dr. João Silva",
+      doctor: user?.role === 'medico' ? user.name : "",
       notes: ""
     });
     
@@ -178,13 +192,28 @@ export function AddAppointmentModal({ isOpen, onClose, onSave }: AddAppointmentM
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Dentista Responsável
           </label>
-          <input
-            type="text"
-            name="doctor"
-            value={formData.doctor}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          {user?.role === 'medico' ? (
+            <input
+              type="text"
+              name="doctor"
+              value={formData.doctor}
+              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+              disabled
+            />
+          ) : (
+            <select
+              name="doctor"
+              value={formData.doctor}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Selecione um dentista</option>
+              {doctors.map((doc) => (
+                <option key={doc.id} value={doc.name}>{doc.name}</option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div>
