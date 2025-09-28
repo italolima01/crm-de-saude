@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AddPatientModal } from "@/components/patients/add-patient-modal";
+import { EditPatientModal } from "@/components/patients/edit-patient-modal";
 import { useAuth } from "@/contexts/auth-context";
 import {
   DropdownMenu,
@@ -30,7 +31,9 @@ import {
   Mail,
   Calendar,
   User,
-  FileText
+  FileText,
+  Edit,
+  Trash2
 } from "lucide-react";
 
 export default function PatientsPage() {
@@ -38,6 +41,8 @@ export default function PatientsPage() {
   const { hasPermission } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState(null);
   const [statusFilter, setStatusFilter] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -86,6 +91,15 @@ export default function PatientsPage() {
 
   const handleAddPatient = (newPatient: any) => {
     setPatients([...patients, newPatient]);
+  };
+
+  const handleEditPatient = (patient: any) => {
+    setSelectedPatient(patient);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdatePatient = (updatedPatient: any) => {
+    setPatients(patients.map(p => p.id === updatedPatient.id ? updatedPatient : p));
   };
 
   const filteredPatients = patients.filter(patient => {
@@ -232,9 +246,34 @@ export default function PatientsPage() {
                     <FileText className="h-4 w-4 mr-1" />
                     Histórico
                   </Button>
-                  <Button variant="ghost" size="sm">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                      <DropdownMenuItem
+                        onClick={() => router.push(`/patients/${patient.id}/medical-history`)}
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        Ver Histórico
+                      </DropdownMenuItem>
+                      {hasPermission('patients:edit') && (
+                        <DropdownMenuItem onClick={() => handleEditPatient(patient)}>
+                          <Edit className="h-4 w-4 mr-2" />
+                          Editar
+                        </DropdownMenuItem>
+                      )}
+                      {hasPermission('patients:manage') && (
+                        <DropdownMenuItem className="text-red-600">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Excluir
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             ))}
@@ -294,6 +333,15 @@ export default function PatientsPage() {
         onClose={() => setIsModalOpen(false)}
         onSave={handleAddPatient}
       />
+
+      {selectedPatient && (
+        <EditPatientModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleUpdatePatient}
+          patient={selectedPatient}
+        />
+      )}
     </div>
   );
 }

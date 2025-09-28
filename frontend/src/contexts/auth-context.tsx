@@ -118,11 +118,11 @@ const mockUsers: User[] = [
     id: "3",
     name: "Dr. João Silva",
     email: "joao@clinica.com",
-    role: "admin_clinica",
+    role: "medico",
     crm: "CD-12345-SP",
     clinicId: "clinic1",
     avatar: "JS",
-    permissions: rolePermissions.admin_clinica
+    permissions: rolePermissions.medico
   },
   {
     id: "4",

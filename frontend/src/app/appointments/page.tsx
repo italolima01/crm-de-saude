@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AddAppointmentModal } from "@/components/appointments/add-appointment-modal";
+import { useAuth } from "@/contexts/auth-context";
 import { 
   Plus, 
   Calendar,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 
 export default function AppointmentsPage() {
+  const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,7 +46,7 @@ export default function AppointmentsPage() {
       duration: 60,
       type: "Primeira consulta",
       status: "Aguardando",
-      doctor: "Dr. João Silva"
+      doctor: "Dr. Carlos Dentista"
     },
     {
       id: 4,
@@ -53,7 +55,7 @@ export default function AppointmentsPage() {
       duration: 45,
       type: "Consulta",
       status: "Confirmado",
-      doctor: "Dr. João Silva"
+      doctor: "Dr. Carlos Dentista"
     },
     {
       id: 5,
@@ -62,13 +64,20 @@ export default function AppointmentsPage() {
       duration: 30,
       type: "Retorno",
       status: "Cancelado",
-      doctor: "Dr. João Silva"
+      doctor: "Dr. Carlos Dentista"
     },
   ]);
 
   const handleAddAppointment = (newAppointment: any) => {
     setAppointments([...appointments, newAppointment]);
   };
+
+  const filteredAppointments = appointments.filter(appointment => {
+    if (user?.role === 'medico') {
+      return appointment.doctor === user.name;
+    }
+    return true;
+  });
 
   const timeSlots = [
     "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", 
@@ -172,7 +181,7 @@ export default function AppointmentsPage() {
             <CardContent>
               <div className="space-y-2">
                 {timeSlots.map((time) => {
-                  const appointment = appointments.find(apt => apt.time === time);
+                  const appointment = filteredAppointments.find(apt => apt.time === time);
                   
                   return (
                     <div key={time} className="flex items-center min-h-[60px] border-b border-gray-100">
@@ -219,23 +228,23 @@ export default function AppointmentsPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Total de consultas</span>
-                  <span className="font-semibold">5</span>
+                  <span className="font-semibold">{filteredAppointments.length}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Confirmadas</span>
-                  <span className="font-semibold text-green-600">2</span>
+                  <span className="font-semibold text-green-600">{filteredAppointments.filter(a => a.status === 'Confirmado').length}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Em andamento</span>
-                  <span className="font-semibold text-blue-600">1</span>
+                  <span className="font-semibold text-blue-600">{filteredAppointments.filter(a => a.status === 'Em andamento').length}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Aguardando</span>
-                  <span className="font-semibold text-yellow-600">1</span>
+                  <span className="font-semibold text-yellow-600">{filteredAppointments.filter(a => a.status === 'Aguardando').length}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Canceladas</span>
-                  <span className="font-semibold text-red-600">1</span>
+                  <span className="font-semibold text-red-600">{filteredAppointments.filter(a => a.status === 'Cancelado').length}</span>
                 </div>
               </div>
             </CardContent>
@@ -271,7 +280,7 @@ export default function AppointmentsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {appointments.slice(0, 3).map((appointment) => (
+                {filteredAppointments.slice(0, 3).map((appointment) => (
                   <div key={appointment.id} className="p-3 bg-gray-50 rounded-lg">
                     <p className="font-medium text-sm">{appointment.patient}</p>
                     <p className="text-xs text-gray-600">{appointment.time} - {appointment.type}</p>
