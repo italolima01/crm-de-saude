@@ -23,7 +23,7 @@ export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, date, ti
     time: time || "",
     duration: "60",
     type: "Avaliação Inicial",
-    doctor: user?.role === 'medico' ? user.name : "",
+    doctor: "", // Initialize with empty string
     notes: ""
   });
 
