@@ -135,7 +135,7 @@ export default function ConsultationsPage() {
   return (
     <ProtectedRoute permission="consultations:manage">
       {activeConsultation ? (
-        <ConsultationManager consultation={activeConsultation} onClose={handleEndConsultation} />
+        <ConsultationManager consultation={activeConsultation} onClose={handleEndConsultation} onUpdateConsultation={handleUpdateConsultation} />
       ) : (
         <div className="space-y-6">
           <div className="flex items-center justify-between">

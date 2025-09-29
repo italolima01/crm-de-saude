@@ -3,17 +3,41 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ToothChart } from "@/components/dental/tooth-chart";
+import { useState, useEffect } from 'react';
 
 interface ConsultationManagerProps {
   consultation: any;
   onClose: () => void;
+  onUpdateConsultation: (updatedConsultation: any) => void;
 }
 
-export function ConsultationManager({ consultation, onClose }: ConsultationManagerProps) {
+export function ConsultationManager({ consultation, onClose, onUpdateConsultation }: ConsultationManagerProps) {
+  const [currentConsultation, setCurrentConsultation] = useState(consultation);
+
+  useEffect(() => {
+    setCurrentConsultation(consultation);
+  }, [consultation]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setCurrentConsultation({
+      ...currentConsultation,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSave = () => {
+    onUpdateConsultation(currentConsultation);
+  };
+
+  const handleFinishConsultation = () => {
+    onUpdateConsultation({ ...currentConsultation, status: 'Concluída' });
+    onClose();
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">Atendimento: {consultation.patient}</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Atendimento: {currentConsultation.patient}</h1>
         <Button onClick={onClose} variant="outline">Voltar à Lista</Button>
       </div>
 
@@ -28,7 +52,39 @@ export function ConsultationManager({ consultation, onClose }: ConsultationManag
           <Card>
             <CardHeader><CardTitle>Detalhes do Atendimento</CardTitle></CardHeader>
             <CardContent>
-              <p>Procedimentos, anotações, etc.</p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Procedimentos (separados por vírgula)</label>
+                  <input
+                    type="text"
+                    name="procedures"
+                    value={currentConsultation.procedures.join(', ')}
+                    onChange={(e) => setCurrentConsultation({ ...currentConsultation, procedures: e.target.value.split(',').map(p => p.trim()) })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Dente(s)</label>
+                  <input
+                    type="text"
+                    name="teeth"
+                    value={currentConsultation.teeth}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
+                  <textarea
+                    name="notes"
+                    value={currentConsultation.notes}
+                    onChange={handleChange}
+                    rows={5}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <Button onClick={handleSave}>Salvar Alterações</Button>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -36,8 +92,11 @@ export function ConsultationManager({ consultation, onClose }: ConsultationManag
           <Card>
             <CardHeader><CardTitle>Informações do Paciente</CardTitle></CardHeader>
             <CardContent>
-              <p>Nome: {consultation.patient}</p>
-              <p>Data: {new Date(consultation.date).toLocaleDateString('pt-BR')}</p>
+              <p><strong>Nome:</strong> {currentConsultation.patient}</p>
+              <p><strong>Data:</strong> {new Date(currentConsultation.date).toLocaleDateString('pt-BR')}</p>
+              <p><strong>Hora:</strong> {currentConsultation.time}</p>
+              <p><strong>Tipo:</strong> {currentConsultation.type}</p>
+              <p><strong>Doutor:</strong> {currentConsultation.doctor}</p>
             </CardContent>
           </Card>
           <Card>
@@ -46,7 +105,7 @@ export function ConsultationManager({ consultation, onClose }: ConsultationManag
               <p>Histórico médico do paciente aqui.</p>
             </CardContent>
           </Card>
-          <Button className="w-full">Finalizar Atendimento</Button>
+          <Button className="w-full" onClick={handleFinishConsultation}>Finalizar Atendimento</Button>
         </div>
       </div>
     </div>
