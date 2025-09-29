@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { appointments as mockAppointments } from "../appointments/page";
+import { appointments as mockAppointments } from "@/lib/mock-data";
 import { 
   UserCheck, 
   Clock, 
@@ -129,7 +129,7 @@ export default function ConsultationsPage() {
     }
   };
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = '2025-09-22';
   const appointmentsToday = mockAppointments.filter(apt => apt.date === today);
 
   return (
