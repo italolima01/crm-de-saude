@@ -26,6 +26,7 @@ export default function MedicalRecordsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [recordTemplate, setRecordTemplate] = useState<any | null>(null);
   const [medicalRecords, setMedicalRecords] = useState([
     // Dados dos pacientes com histórico odontológico
     {
@@ -80,6 +81,64 @@ export default function MedicalRecordsPage() {
     }
   ]);
 
+  const defaultTemplate = {
+    type: 'Avaliação de Rotina',
+    chiefComplaint: 'Paciente para avaliação de rotina e profilaxia.',
+    historyOfPresentIllness: 'Paciente não relata histórico de doença atual.',
+    physicalExamination: 'Exame clínico sem alterações significativas.',
+    diagnosis: 'Paciente hígido, sem necessidade de intervenção imediata.',
+    treatment: 'Profilaxia e aplicação de flúor.',
+    followUp: 'Retorno em 6 meses para nova avaliação.'
+  };
+
+  const initialEvaluationTemplate = {
+    type: 'Avaliação Inicial',
+    chiefComplaint: 'Paciente para avaliação inicial.',
+    historyOfPresentIllness: '',
+    physicalExamination: '',
+    diagnosis: '',
+    treatment: '',
+    medications: '',
+    observations: '',
+    followUp: '',
+  };
+
+  const treatmentContinuityTemplate = {
+    type: 'Continuidade de Tratamento',
+    chiefComplaint: 'Retorno para continuidade de tratamento.',
+    historyOfPresentIllness: 'Paciente segue plano de tratamento estabelecido.',
+    physicalExamination: '',
+    diagnosis: '',
+    treatment: '',
+    medications: '',
+    observations: '',
+    followUp: '',
+  };
+
+  const dentalEmergencyTemplate = {
+    type: 'Urgência Odontológica',
+    chiefComplaint: 'Paciente com dor aguda/emergência.',
+    historyOfPresentIllness: '',
+    physicalExamination: '',
+    diagnosis: 'Necessidade de intervenção imediata.',
+    treatment: 'Alívio da dor e tratamento emergencial.',
+    medications: '',
+    observations: 'Prioridade de atendimento.',
+    followUp: '',
+  };
+
+  const cleaningTemplate = {
+    type: 'Limpeza e Profilaxia',
+    chiefComplaint: 'Paciente para limpeza e profilaxia de rotina.',
+    historyOfPresentIllness: '',
+    physicalExamination: 'Gengivas saudáveis, sem sinais de inflamação.',
+    diagnosis: 'Saúde bucal em dia.',
+    treatment: 'Remoção de tártaro e placa, aplicação de flúor.',
+    medications: '',
+    observations: 'Orientação sobre higiene bucal.',
+    followUp: 'Retorno em 6 meses.',
+  };
+
   const handleAddRecord = (newRecord: any) => {
     setDetailedRecords([...detailedRecords, newRecord]);
   };
@@ -128,7 +187,10 @@ export default function MedicalRecordsPage() {
               <Download className="mr-2 h-4 w-4" />
               Exportar
             </Button>
-            <Button onClick={() => setIsAddModalOpen(true)}>
+            <Button onClick={() => {
+                      setRecordTemplate(null);
+                      setIsAddModalOpen(true);
+                    }}>
               <Plus className="mr-2 h-4 w-4" />
               Novo Registro
             </Button>
@@ -399,12 +461,11 @@ export default function MedicalRecordsPage() {
                     <Plus className="mr-2 h-4 w-4" />
                     Novo Registro
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button variant="outline" className="w-full justify-start" onClick={() => { setRecordTemplate(defaultTemplate); setIsAddModalOpen(true); }}>
                     <FileText className="mr-2 h-4 w-4" />
                     Modelo de Prontuário
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Download className="mr-2 h-4 w-4" />
+<Button variant="outline" className="w-full justify-start" onClick={() => window.print()}>
                     Exportar Relatório
                   </Button>
                 </div>
@@ -418,16 +479,20 @@ export default function MedicalRecordsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <button className="w-full text-left p-2 text-sm hover:bg-blue-50 rounded border border-gray-200">
-                    � Avalilação Inicial
+                  <button className="w-full text-left p-2 text-sm hover:bg-blue-50 rounded border border-gray-200"
+                    onClick={() => { setRecordTemplate(initialEvaluationTemplate); setIsAddModalOpen(true); }}>
+                     Avaliação Inicial
                   </button>
-                  <button className="w-full text-left p-2 text-sm hover:bg-green-50 rounded border border-gray-200">
+                  <button className="w-full text-left p-2 text-sm hover:bg-green-50 rounded border border-gray-200"
+                    onClick={() => { setRecordTemplate(treatmentContinuityTemplate); setIsAddModalOpen(true); }}>
                     🔄 Continuidade de Tratamento
                   </button>
-                  <button className="w-full text-left p-2 text-sm hover:bg-red-50 rounded border border-gray-200">
+                  <button className="w-full text-left p-2 text-sm hover:bg-red-50 rounded border border-gray-200"
+                    onClick={() => { setRecordTemplate(dentalEmergencyTemplate); setIsAddModalOpen(true); }}>
                     🚨 Urgência Odontológica
                   </button>
-                  <button className="w-full text-left p-2 text-sm hover:bg-purple-50 rounded border border-gray-200">
+                  <button className="w-full text-left p-2 text-sm hover:bg-purple-50 rounded border border-gray-200"
+                    onClick={() => { setRecordTemplate(cleaningTemplate); setIsAddModalOpen(true); }}>
                     🧽 Limpeza e Profilaxia
                   </button>
                 </div>
@@ -439,8 +504,12 @@ export default function MedicalRecordsPage() {
         {/* Modals */}
         <AddMedicalRecordModal
           isOpen={isAddModalOpen}
-          onClose={() => setIsAddModalOpen(false)}
+          onClose={() => {
+            setIsAddModalOpen(false);
+            setRecordTemplate(null);
+          }}
           onSave={handleAddRecord}
+          template={recordTemplate}
         />
 
         <ViewMedicalRecordModal

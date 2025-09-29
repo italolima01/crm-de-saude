@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { FileText, User, Calendar, AlertTriangle, Pill } from "lucide-react";
@@ -9,25 +9,36 @@ interface AddMedicalRecordModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (record: any) => void;
+  template?: any;
 }
 
-export function AddMedicalRecordModal({ isOpen, onClose, onSave }: AddMedicalRecordModalProps) {
-  const [formData, setFormData] = useState({
-    patient: "",
-    date: new Date().toISOString().split('T')[0],
-    type: "Avaliação Inicial",
-    chiefComplaint: "",
-    historyOfPresentIllness: "",
-    physicalExamination: "",
-    diagnosis: "",
-    treatment: "",
-    medications: "",
-    observations: "",
-    followUp: "",
-    doctor: "Dr. Carlos Dentista",
-    toothChart: "",
-    procedures: []
-  });
+const initialFormData = {
+  patient: "",
+  date: new Date().toISOString().split('T')[0],
+  type: "Avaliação Inicial",
+  chiefComplaint: "",
+  historyOfPresentIllness: "",
+  physicalExamination: "",
+  diagnosis: "",
+  treatment: "",
+  medications: "",
+  observations: "",
+  followUp: "",
+  doctor: "Dr. Carlos Dentista",
+  toothChart: "",
+  procedures: []
+};
+
+export function AddMedicalRecordModal({ isOpen, onClose, onSave, template }: AddMedicalRecordModalProps) {
+  const [formData, setFormData] = useState(initialFormData);
+
+  useEffect(() => {
+    if (template) {
+      setFormData({ ...initialFormData, ...template });
+    } else {
+      setFormData(initialFormData);
+    }
+  }, [template, isOpen]);
 
   const patients = [
     "Maria Silva",
