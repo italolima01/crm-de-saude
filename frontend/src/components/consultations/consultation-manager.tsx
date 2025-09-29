@@ -13,10 +13,23 @@ interface ConsultationManagerProps {
 
 export function ConsultationManager({ consultation, onClose, onUpdateConsultation }: ConsultationManagerProps) {
   const [currentConsultation, setCurrentConsultation] = useState(consultation);
+  const [selectedTeeth, setSelectedTeeth] = useState<string[]>([]);
 
   useEffect(() => {
     setCurrentConsultation(consultation);
+    if (consultation.teeth) {
+      setSelectedTeeth(consultation.teeth.split(',').map((t: string) => t.trim()));
+    }
   }, [consultation]);
+
+  const handleToothSelect = (tooth: string) => {
+    const newSelectedTeeth = selectedTeeth.includes(tooth)
+      ? selectedTeeth.filter(t => t !== tooth)
+      : [...selectedTeeth, tooth];
+
+    setSelectedTeeth(newSelectedTeeth);
+    setCurrentConsultation({ ...currentConsultation, teeth: newSelectedTeeth.join(', ') });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setCurrentConsultation({
@@ -46,7 +59,7 @@ export function ConsultationManager({ consultation, onClose, onUpdateConsultatio
           <Card>
             <CardHeader><CardTitle>Odontograma</CardTitle></CardHeader>
             <CardContent>
-              <ToothChart />
+              <ToothChart selectedTeeth={selectedTeeth} onToothSelect={handleToothSelect} />
             </CardContent>
           </Card>
           <Card>
@@ -71,6 +84,7 @@ export function ConsultationManager({ consultation, onClose, onUpdateConsultatio
                     value={currentConsultation.teeth}
                     onChange={handleChange}
                     className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    readOnly // Make this readonly to reflect selection from chart
                   />
                 </div>
                 <div>

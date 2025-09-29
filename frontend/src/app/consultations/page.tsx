@@ -27,8 +27,10 @@ import {
   Calendar,
   User
 } from "lucide-react";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function ConsultationsPage() {
+  const { user } = useAuth();
   const [isStartModalOpen, setIsStartModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
@@ -110,6 +112,7 @@ export default function ConsultationsPage() {
 
   const handleUpdateConsultation = (updatedConsultation: any) => {
     setConsultations(consultations.map(c => c.id === updatedConsultation.id ? updatedConsultation : c));
+    setIsEditModalOpen(false);
   };
 
   const handleDeleteConsultation = (consultationId: number) => {
@@ -346,6 +349,26 @@ export default function ConsultationsPage() {
           </div>
         </div>
       )}
+
+      <StartConsultationModal
+        isOpen={isStartModalOpen}
+        onClose={() => setIsStartModalOpen(false)}
+        onStart={handleStartConsultation}
+        appointments={appointmentsToday}
+      />
+
+      <ConsultationDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+        consultation={selectedConsultation}
+      />
+
+      <EditConsultationModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleUpdateConsultation}
+        consultation={selectedConsultation}
+      />
     </ProtectedRoute>
   );
 

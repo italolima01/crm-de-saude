@@ -18,6 +18,8 @@ export function EditConsultationModal({ isOpen, onClose, onSave, consultation }:
     setFormData(consultation);
   }, [consultation]);
 
+  if (!consultation) return null;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
