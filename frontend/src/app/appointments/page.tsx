@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { AddAppointmentModal } from "@/components/appointments/add-appointment-modal";
 import { WeekView } from "@/components/appointments/week-view";
 import { MonthView } from "@/components/appointments/month-view";
+import { RescheduleAppointmentModal } from "@/components/appointments/reschedule-appointment-modal";
 import { useAuth } from "@/contexts/auth-context";
 import { mockUsers } from "@/contexts/auth-context";
 import {
@@ -23,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 import { 
   Plus, 
   Calendar,
@@ -45,11 +47,13 @@ const parseDate = (dateString: string) => {
 };
 
 export default function AppointmentsPage() {
+  const router = useRouter();
   const { user, hasPermission } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date('2025-09-22T12:00:00'));
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
 
   const handleOpenModal = (time?: string) => {
     setSelectedTime(time);
@@ -90,6 +94,12 @@ export default function AppointmentsPage() {
   const handleStatusChange = (appointmentId: number, newStatus: string) => {
     setAppointments(appointments.map(apt => 
         apt.id === appointmentId ? { ...apt, status: newStatus } : apt
+    ));
+  };
+
+  const handleRescheduleAppointment = (appointmentId: number, newDate: string, newTime: string) => {
+    setAppointments(appointments.map(apt => 
+        apt.id === appointmentId ? { ...apt, date: newDate, time: newTime } : apt
     ));
   };
 
@@ -399,15 +409,15 @@ export default function AppointmentsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start" onClick={() => handleOpenModal()}>
                   <Plus className="mr-2 h-4 w-4" />
                   Novo Agendamento
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start" onClick={() => setIsRescheduleModalOpen(true)}>
                   <Clock className="mr-2 h-4 w-4" />
                   Reagendar
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start" onClick={() => router.push('/lista-de-espera')}>
                   <User className="mr-2 h-4 w-4" />
                   Lista de Espera
                 </Button>
@@ -442,6 +452,13 @@ export default function AppointmentsPage() {
         doctors={doctors}
         date={currentDate.toISOString().split('T')[0]}
         time={selectedTime}
+      />
+
+      <RescheduleAppointmentModal
+        isOpen={isRescheduleModalOpen}
+        onClose={() => setIsRescheduleModalOpen(false)}
+        onSave={handleRescheduleAppointment}
+        appointments={appointments}
       />
     </div>
   );
