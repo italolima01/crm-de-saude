@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ProtectedRoute } from "@/components/auth/protected-route";
@@ -15,6 +15,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu";
 import { appointments as mockAppointments } from "@/lib/mock-data";
 import { 
@@ -77,6 +78,27 @@ export default function ConsultationsPage() {
       teeth: "Arcada completa"
     },
   ]);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Todos');
+  const [filteredConsultations, setFilteredConsultations] = useState(consultations);
+
+  useEffect(() => {
+    let result = consultations;
+
+    if (statusFilter !== 'Todos') {
+      result = result.filter(c => c.status === statusFilter);
+    }
+
+    if (searchTerm) {
+      result = result.filter(c => 
+        c.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.procedures.some(p => p.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+
+    setFilteredConsultations(result);
+  }, [searchTerm, statusFilter, consultations]);
 
   const handleStartConsultation = (appointment: any) => {
     const newConsultation = {
@@ -159,12 +181,26 @@ export default function ConsultationsPage() {
                     type="text"
                     placeholder="Buscar atendimentos por paciente ou procedimento..."
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
-                <Button variant="outline">
-                  <Filter className="mr-2 h-4 w-4" />
-                  Filtros
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      <Filter className="mr-2 h-4 w-4" />
+                      {statusFilter}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Filtrar por Status</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuCheckboxItem checked={statusFilter === 'Todos'} onCheckedChange={() => setStatusFilter('Todos')}>Todos</DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem checked={statusFilter === 'Concluída'} onCheckedChange={() => setStatusFilter('Concluída')}>Concluída</DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem checked={statusFilter === 'Em andamento'} onCheckedChange={() => setStatusFilter('Em andamento')}>Em andamento</DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem checked={statusFilter === 'Agendada'} onCheckedChange={() => setStatusFilter('Agendada')}>Agendada</DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </CardContent>
           </Card>
@@ -227,7 +263,7 @@ export default function ConsultationsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {consultations.map((consultation) => (
+                {filteredConsultations.map((consultation) => (
                   <div
                     key={consultation.id}
                     className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
@@ -359,13 +395,19 @@ export default function ConsultationsPage() {
 
       <ConsultationDetailsModal
         isOpen={isDetailsModalOpen}
-        onClose={() => setIsDetailsModalOpen(false)}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedConsultation(null);
+        }}
         consultation={selectedConsultation}
       />
 
       <EditConsultationModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedConsultation(null);
+        }}
         onSave={handleUpdateConsultation}
         consultation={selectedConsultation}
       />

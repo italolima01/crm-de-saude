@@ -12,14 +12,16 @@ interface StartConsultationModalProps {
 }
 
 export function StartConsultationModal({ isOpen, onClose, onStart, appointments }: StartConsultationModalProps) {
-  const [selectedAppointmentId, setSelectedAppointmentId] = useState<number | undefined>(undefined);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedAppointmentId) {
-      const appointment = appointments.find(apt => apt.id === selectedAppointmentId);
-      onStart(appointment);
-      onClose();
+      const appointment = appointments.find(apt => apt.id === Number(selectedAppointmentId));
+      if (appointment) {
+        onStart(appointment);
+        onClose();
+      }
     }
   };
 
@@ -30,7 +32,7 @@ export function StartConsultationModal({ isOpen, onClose, onStart, appointments 
           <label className="block text-sm font-medium text-gray-700 mb-1">Selecione o Paciente</label>
           <select
             value={selectedAppointmentId}
-            onChange={(e) => setSelectedAppointmentId(Number(e.target.value))}
+            onChange={(e) => setSelectedAppointmentId(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">Selecione um paciente da agenda de hoje</option>
