@@ -85,7 +85,7 @@ export function MonthView({ appointments, currentDate, parseDate, handleStatusCh
                     .map(appointment => (
                       <div key={appointment.id} className={`p-1 rounded-lg border ${getStatusColor(appointment.status)}`}>
                         <p className="font-medium text-xs truncate">{appointment.patient}</p>
-                        <p className="font-medium text-xs truncate">{appointment.patient}</p>
+                        {appointment.createdBy !== appointment.doctor && <p className="text-xs opacity-50 truncate">Por: {appointment.createdBy}</p>}
                         {hasPermission('appointments:edit') ? (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>

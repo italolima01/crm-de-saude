@@ -11,11 +11,12 @@ interface AddAppointmentModalProps {
   onClose: () => void;
   onSave: (appointment: any) => void;
   doctors: any[];
+  appointments: any[];
   date?: string;
   time?: string;
 }
 
-export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, date, time }: AddAppointmentModalProps) {
+export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, appointments, date, time }: AddAppointmentModalProps) {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     patient: "",
@@ -65,6 +66,15 @@ export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, date, ti
       return;
     }
 
+    const isDuplicate = appointments.some(
+      apt => apt.date === formData.date && apt.time === formData.time && apt.doctor === formData.doctor
+    );
+
+    if (isDuplicate) {
+      alert("Já existe um agendamento para este médico neste horário.");
+      return;
+    }
+
     const newAppointment = {
       id: Date.now(),
       patient: formData.patient,
@@ -74,7 +84,8 @@ export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, date, ti
       type: formData.type,
       status: "Aguardando",
       doctor: formData.doctor,
-      notes: formData.notes
+      notes: formData.notes,
+      createdBy: user?.name || ""
     };
 
     onSave(newAppointment);

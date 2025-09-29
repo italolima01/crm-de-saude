@@ -72,7 +72,7 @@ export function WeekView({ appointments, currentDate, parseDate, handleStatusCha
                 <div key={appointment.id} className={`p-2 rounded-lg border ${getStatusColor(appointment.status)}`}>
                   <p className="font-medium text-sm">{appointment.patient}</p>
                   <p className="text-xs opacity-75">{appointment.time} - {appointment.doctor}</p>
-                  <p className="text-xs opacity-75">{appointment.time} - {appointment.doctor}</p>
+                  {appointment.createdBy !== appointment.doctor && <p className="text-xs opacity-50">Criado por: {appointment.createdBy}</p>}
                   {hasPermission('appointments:edit') ? (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
