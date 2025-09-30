@@ -19,30 +19,32 @@ interface AddAppointmentModalProps {
 export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, appointments, date, time }: AddAppointmentModalProps) {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
-    patient: "",
+    patient_id: "",
     date: date || "",
     time: time || "",
     duration: "60",
     type: "Avaliação Inicial",
-    doctor: "", // Initialize with empty string
+    dentist_id: "", // Initialize with empty string
     notes: ""
   });
+  const [patients, setPatients] = useState([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch("http://localhost:5000/api/patients")
+        .then((res) => res.json())
+        .then((data) => setPatients(data));
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
       date: date || "",
       time: time || "",
-      doctor: user?.role === 'medico' ? user.name : ""
+      dentist_id: user?.role === 'medico' ? user.id : ""
     }));
   }, [date, time, user]);
-
-  const patients = [
-    "Maria Silva",
-    "João Santos", 
-    "Ana Costa",
-    "Pedro Lima"
-  ];
 
   const appointmentTypes = [
     "Avaliação Inicial",
@@ -61,13 +63,13 @@ export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, appointm
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.patient || !formData.date || !formData.time) {
+    if (!formData.patient_id || !formData.date || !formData.time) {
       alert("Por favor, preencha os campos obrigatórios.");
       return;
     }
 
     const isDuplicate = appointments.some(
-      apt => apt.date === formData.date && apt.time === formData.time && apt.doctor === formData.doctor
+      apt => apt.date === formData.date && apt.time === formData.time && apt.dentist_id === formData.dentist_id
     );
 
     if (isDuplicate) {
@@ -76,14 +78,13 @@ export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, appointm
     }
 
     const newAppointment = {
-      id: Date.now(),
-      patient: formData.patient,
+      patient_id: parseInt(formData.patient_id),
       date: formData.date,
       time: formData.time,
       duration: parseInt(formData.duration),
       type: formData.type,
       status: "Aguardando",
-      doctor: formData.doctor,
+      dentist_id: parseInt(formData.dentist_id),
       notes: formData.notes,
       createdBy: user?.name || ""
     };
@@ -91,12 +92,12 @@ export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, appointm
     onSave(newAppointment);
     
     setFormData({
-      patient: "",
+      patient_id: "",
       date: "",
       time: "",
       duration: "60",
       type: "Consulta",
-      doctor: user?.role === 'medico' ? user.name : "",
+      dentist_id: user?.role === 'medico' ? user.id : "",
       notes: ""
     });
     
@@ -119,15 +120,15 @@ export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, appointm
             Paciente *
           </label>
           <select
-            name="patient"
-            value={formData.patient}
+            name="patient_id"
+            value={formData.patient_id}
             onChange={handleChange}
             required
             className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">Selecione um paciente</option>
-            {patients.map((patient) => (
-              <option key={patient} value={patient}>{patient}</option>
+            {patients.map((patient: any) => (
+              <option key={patient.id} value={patient.id}>{patient.name}</option>
             ))}
           </select>
         </div>
@@ -203,28 +204,18 @@ export function AddAppointmentModal({ isOpen, onClose, onSave, doctors, appointm
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Dentista Responsável
           </label>
-          {user?.role === 'medico' ? (
-            <input
-              type="text"
-              name="doctor"
-              value={formData.doctor}
-              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
-              disabled
-            />
-          ) : (
-            <select
-              name="doctor"
-              value={formData.doctor}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Selecione um dentista</option>
-              {doctors.map((doc) => (
-                <option key={doc.id} value={doc.name}>{doc.name}</option>
-              ))}
-            </select>
-          )}
+          <select
+            name="dentist_id"
+            value={formData.dentist_id}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">Selecione um dentista</option>
+            {doctors.map((doc: any) => (
+              <option key={doc.id} value={doc.id}>{doc.name}</option>
+            ))}
+          </select>
         </div>
 
         <div>

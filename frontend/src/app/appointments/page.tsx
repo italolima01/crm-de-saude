@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AddAppointmentModal } from "@/components/appointments/add-appointment-modal";
@@ -8,7 +8,6 @@ import { WeekView } from "@/components/appointments/week-view";
 import { MonthView } from "@/components/appointments/month-view";
 import { RescheduleAppointmentModal } from "@/components/appointments/reschedule-appointment-modal";
 import { useAuth } from "@/contexts/auth-context";
-import { mockUsers } from "@/contexts/auth-context";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,11 +41,10 @@ const startOfDay = (date: Date) => {
 };
 
 const parseDate = (dateString: string) => {
+  if (!dateString) return new Date();
   const [year, month, day] = dateString.split('-').map(Number);
   return new Date(year, month - 1, day);
 };
-
-import { appointments as mockAppointments } from "@/lib/mock-data";
 
 export default function AppointmentsPage() {
   const router = useRouter();
@@ -64,11 +62,53 @@ export default function AppointmentsPage() {
   const [doctorFilter, setDoctorFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const doctors = mockUsers.filter(user => user.role === 'medico');
-  const [appointments, setAppointments] = useState(mockAppointments);
+  const [dentists, setDentists] = useState([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
 
-  const handleAddAppointment = (newAppointment: any) => {
-    setAppointments([...appointments, newAppointment]);
+  useEffect(() => {
+    console.log("Fetching appointments...");
+    fetch('http://localhost:5000/api/appointments')
+      .then(res => res.json())
+      .then(data => {
+        console.log("Appointments fetched:", data);
+        setAppointments(data);
+      })
+      .catch(err => console.error("Failed to fetch appointments:", err));
+
+    console.log("Fetching dentists...");
+    fetch('http://localhost:5000/api/dentists')
+      .then(res => res.json())
+      .then(data => {
+        console.log("Dentists fetched:", data);
+        setDentists(data);
+      })
+      .catch(err => console.error("Failed to fetch dentists:", err));
+  }, []);
+
+  const handleAddAppointment = async (newAppointment: any) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/appointments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newAppointment),
+      });
+
+      if (response.ok) {
+        // Re-fetch appointments to get the new one from the database
+        fetch("http://localhost:5000/api/appointments")
+          .then((res) => res.json())
+          .then((data) => setAppointments(data));
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create appointment. Server response:", errorData);
+        alert("Failed to create appointment: " + (errorData.error || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Failed to create appointment. Network error or unexpected issue:", error);
+      alert("Failed to create appointment. See console for details.");
+    }
   };
 
   const handleStatusChange = (appointmentId: number, newStatus: string) => {
@@ -83,7 +123,7 @@ export default function AppointmentsPage() {
     ));
   };
 
-  const filteredAppointments = appointments.filter(appointment => {
+  const filteredAppointments = appointments.filter((appointment: any) => {
     const isMedico = user?.role === 'medico';
     const doctorMatch = isMedico ? appointment.doctor === user.name : (doctorFilter === "all" || appointment.doctor === doctorFilter);
     const statusMatch = statusFilter === "all" || appointment.status === statusFilter;
@@ -91,7 +131,7 @@ export default function AppointmentsPage() {
     return doctorMatch && statusMatch;
   });
 
-  const periodAppointments = filteredAppointments.filter(appointment => {
+  const periodAppointments = filteredAppointments.filter((appointment: any) => {
     const appointmentDate = startOfDay(parseDate(appointment.date));
     const current = startOfDay(currentDate);
 
@@ -192,7 +232,7 @@ export default function AppointmentsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos</SelectItem>
-                    {doctors.map(doc => (
+                    {dentists.map((doc: any) => (
                       <SelectItem key={doc.id} value={doc.name}>{doc.name}</SelectItem>
                     ))}
                   </SelectContent>
@@ -283,7 +323,7 @@ export default function AppointmentsPage() {
               <CardContent>
                 <div className="space-y-2">
                   {timeSlots.map((time) => {
-                    const appointment = filteredAppointments.find(apt => apt.time === time && startOfDay(parseDate(apt.date)).getTime() === startOfDay(currentDate).getTime());
+                    const appointment = filteredAppointments.find((apt: any) => apt.time === time && startOfDay(parseDate(apt.date)).getTime() === startOfDay(currentDate).getTime());
                     
                     return (
                       <div key={time} className="flex items-center min-h-[60px] border-b border-gray-100">
@@ -356,28 +396,28 @@ export default function AppointmentsPage() {
                     <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
                     Confirmadas
                   </span>
-                  <span className="font-semibold text-green-600">{periodAppointments.filter(a => a.status === 'Confirmado').length}</span>
+                  <span className="font-semibold text-green-600">{periodAppointments.filter((a: any) => a.status === 'Confirmado').length}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="flex items-center text-sm text-gray-600">
                     <span className="h-2 w-2 rounded-full bg-blue-500 mr-2"></span>
                     Em andamento
                   </span>
-                  <span className="font-semibold text-blue-600">{periodAppointments.filter(a => a.status === 'Em andamento').length}</span>
+                  <span className="font-semibold text-blue-600">{periodAppointments.filter((a: any) => a.status === 'Em andamento').length}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="flex items-center text-sm text-gray-600">
                     <span className="h-2 w-2 rounded-full bg-yellow-500 mr-2"></span>
                     Aguardando
                   </span>
-                  <span className="font-semibold text-yellow-600">{periodAppointments.filter(a => a.status === 'Aguardando').length}</span>
+                  <span className="font-semibold text-yellow-600">{periodAppointments.filter((a: any) => a.status === 'Aguardando').length}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="flex items-center text-sm text-gray-600">
                     <span className="h-2 w-2 rounded-full bg-red-500 mr-2"></span>
                     Canceladas
                   </span>
-                  <span className="font-semibold text-red-600">{periodAppointments.filter(a => a.status === 'Cancelado').length}</span>
+                  <span className="font-semibold text-red-600">{periodAppointments.filter((a: any) => a.status === 'Cancelado').length}</span>
                 </div>
               </div>
             </CardContent>
@@ -413,7 +453,7 @@ export default function AppointmentsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {periodAppointments.slice(0, 3).map((appointment) => (
+                {periodAppointments.slice(0, 3).map((appointment: any) => (
                   <div key={appointment.id} className="p-3 bg-gray-50 rounded-lg">
                     <p className="font-medium text-sm">{appointment.patient}</p>
                     <p className="text-xs text-gray-600">{appointment.time} - {appointment.type}</p>
@@ -426,15 +466,17 @@ export default function AppointmentsPage() {
       </div>
 
       {/* Modal para novo agendamento */}
-      <AddAppointmentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleAddAppointment}
-        doctors={doctors}
-        appointments={appointments}
-        date={currentDate.toISOString().split('T')[0]}
-        time={selectedTime}
-      />
+      {dentists.length > 0 && (
+        <AddAppointmentModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleAddAppointment}
+          doctors={dentists}
+          appointments={appointments}
+          date={currentDate.toISOString().split('T')[0]}
+          time={selectedTime}
+        />
+      )}
 
       <RescheduleAppointmentModal
         isOpen={isRescheduleModalOpen}

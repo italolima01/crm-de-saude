@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,51 +46,43 @@ export default function PatientsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [patients, setPatients] = useState([
-    {
-      id: 1,
-      name: "Maria Silva",
-      email: "maria.silva@email.com",
-      phone: "(11) 99999-9999",
-      birthDate: "1985-03-15",
-      lastVisit: "2024-01-15",
-      status: "Ativo",
-      avatar: "MS"
-    },
-    {
-      id: 2,
-      name: "João Santos",
-      email: "joao.santos@email.com",
-      phone: "(11) 88888-8888",
-      birthDate: "1978-07-22",
-      lastVisit: "2024-01-10",
-      status: "Ativo",
-      avatar: "JS"
-    },
-    {
-      id: 3,
-      name: "Ana Costa",
-      email: "ana.costa@email.com",
-      phone: "(11) 77777-7777",
-      birthDate: "1992-11-08",
-      lastVisit: "2023-12-20",
-      status: "Inativo",
-      avatar: "AC"
-    },
-    {
-      id: 4,
-      name: "Pedro Lima",
-      email: "pedro.lima@email.com",
-      phone: "(11) 66666-6666",
-      birthDate: "1980-05-30",
-      lastVisit: "2024-01-12",
-      status: "Ativo",
-      avatar: "PL"
-    },
-  ]);
+  const [patients, setPatients] = useState([]);
 
-  const handleAddPatient = (newPatient: any) => {
-    setPatients([...patients, newPatient]);
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/patients");
+        const data = await response.json();
+        setPatients(data);
+      } catch (error) {
+        console.error("Failed to fetch patients:", error);
+      }
+    };
+    fetchPatients();
+  }, []);
+
+  const handleAddPatient = async (newPatient: any) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/patients", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPatient),
+      });
+
+      if (response.ok) {
+        const createdPatient = await response.json();
+        setPatients([...patients, createdPatient]);
+      } else if (response.status === 409) {
+        const errorData = await response.json();
+        alert(errorData.error);
+      } else {
+        console.error("Failed to create patient. Status:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Failed to create patient. Network error or unexpected issue:", error);
+    }
   };
 
   const handleEditPatient = (patient: any) => {
@@ -103,6 +95,9 @@ export default function PatientsPage() {
   };
 
   const filteredPatients = patients.filter(patient => {
+    if (!patient || !patient.name || !patient.email) {
+      return false;
+    }
     const searchTermMatch = patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           patient.email.toLowerCase().includes(searchTerm.toLowerCase());
 
