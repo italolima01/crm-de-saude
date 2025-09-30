@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { AddMedicalRecordModal } from "@/components/medical-records/add-medical-record-modal";
@@ -10,6 +9,7 @@ import { ViewMedicalRecordModal } from "@/components/medical-records/view-medica
 import { 
   ArrowLeft,
   Plus,
+  Card, CardContent, CardHeader, CardTitle,
   FileText,
   Calendar,
   User,
@@ -141,8 +141,8 @@ export default function PatientMedicalHistoryPage() {
               Voltar
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Histórico Odontológico</h1>
-              <p className="text-gray-600">{patient.name}</p>
+              <h1 className="text-h1 font-bold text-text-main">Histórico Odontológico</h1>
+              <p className="text-base font-semibold text-text-main">{patient.name}</p>
             </div>
           </div>
           <Button onClick={() => setIsAddModalOpen(true)}>
@@ -163,8 +163,8 @@ export default function PatientMedicalHistoryPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Dados Pessoais</p>
-                <p className="font-medium">{patient.name}</p>
-                <p className="text-sm text-gray-600">{patient.email}</p>
+                <p className="font-semibold text-base">{patient.name}</p>
+                <p className="text-sm font-normal text-gray-600">{patient.email}</p>
                 <p className="text-sm text-gray-600">{patient.phone}</p>
                 <p className="text-sm text-gray-600">CPF: {patient.cpf}</p>
               </div>

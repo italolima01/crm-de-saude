@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { AddMedicalRecordModal } from "@/components/medical-records/add-medical-record-modal";
 import { ViewMedicalRecordModal } from "@/components/medical-records/view-medical-record-modal";
 import {
   FileText,
+  Card, CardContent, CardHeader, CardTitle,
   Search,
+  Button,
   Filter,
   Plus,
   Download,
@@ -208,7 +208,7 @@ export default function MedicalRecordsPage() {
         </div>
 
         {/* Search and Filters */}
-        <Card>
+        <Card className="transition-all duration-200 hover:shadow-lg">
           <CardContent className="pt-6">
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
@@ -230,19 +230,19 @@ export default function MedicalRecordsPage() {
 
               {/* Quick Filters */}
               <div className="flex flex-wrap gap-2">
-                <button className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200">
+                <button className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-transform hover:-translate-y-px">
                   📋 Todos
                 </button>
-                <button className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full hover:bg-green-200">
+                <button className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-transform hover:-translate-y-px">
                   ✅ Ativos
                 </button>
-                <button className="px-3 py-1 text-xs bg-orange-100 text-orange-700 rounded-full hover:bg-orange-200">
+                <button className="px-3 py-1 text-xs bg-orange-100 text-orange-700 rounded-full hover:bg-orange-200 transition-transform hover:-translate-y-px">
                   ⚠️ Com Alergias
                 </button>
-                <button className="px-3 py-1 text-xs bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200">
+                <button className="px-3 py-1 text-xs bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-transform hover:-translate-y-px">
                   🦷 Em Tratamento
                 </button>
-                <button className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-full hover:bg-red-200">
+                <button className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-full hover:bg-red-200 transition-transform hover:-translate-y-px">
                   🚨 Urgência Odontológica
                 </button>
               </div>
@@ -252,7 +252,7 @@ export default function MedicalRecordsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Total de Prontuários
@@ -264,7 +264,7 @@ export default function MedicalRecordsPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Atualizados Hoje
@@ -276,7 +276,7 @@ export default function MedicalRecordsPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Alertas Odontológicos
@@ -288,7 +288,7 @@ export default function MedicalRecordsPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Prontuários Digitais
@@ -304,7 +304,7 @@ export default function MedicalRecordsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Medical Records List */}
           <div className="lg:col-span-2">
-            <Card>
+            <Card className="transition-all duration-200 hover:shadow-lg">
               <CardHeader>
                 <CardTitle>Prontuários dos Pacientes</CardTitle>
               </CardHeader>
@@ -313,7 +313,7 @@ export default function MedicalRecordsPage() {
                   {filteredRecords.map((record) => (
                     <div
                       key={record.id}
-                      className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -390,7 +390,7 @@ export default function MedicalRecordsPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Recent Entries */}
-            <Card>
+            <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center">
                   <Clock className="mr-2 h-4 w-4" />
@@ -431,7 +431,7 @@ export default function MedicalRecordsPage() {
             </Card>
 
             {/* Medical Alerts */}
-            <Card>
+            <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center text-orange-600">
                   <AlertTriangle className="mr-2 h-4 w-4" />
@@ -457,7 +457,7 @@ export default function MedicalRecordsPage() {
             </Card>
 
             {/* Quick Actions */}
-            <Card>
+            <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
               <CardHeader>
                 <CardTitle className="text-lg">Ações Rápidas</CardTitle>
               </CardHeader>
@@ -466,7 +466,7 @@ export default function MedicalRecordsPage() {
                   <Button
                     variant="outline"
                     className="w-full justify-start"
-                    onClick={() => setIsAddModalOpen(true)}
+                    onClick={() => { setRecordTemplate(null); setIsAddModalOpen(true); }}
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     Novo Registro
@@ -483,25 +483,25 @@ export default function MedicalRecordsPage() {
             </Card>
 
             {/* Templates */}
-            <Card>
+            <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
               <CardHeader>
                 <CardTitle className="text-lg">📋 Templates Rápidos</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <button className="w-full text-left p-2 text-sm hover:bg-blue-50 rounded border border-gray-200"
+                  <button className="w-full text-left p-2 text-sm hover:bg-blue-50 rounded border border-gray-200 transition-all duration-200 hover:shadow-sm hover:-translate-y-px"
                     onClick={() => { setRecordTemplate(initialEvaluationTemplate); setIsAddModalOpen(true); }}>
                      Avaliação Inicial
                   </button>
-                  <button className="w-full text-left p-2 text-sm hover:bg-green-50 rounded border border-gray-200"
+                  <button className="w-full text-left p-2 text-sm hover:bg-green-50 rounded border border-gray-200 transition-all duration-200 hover:shadow-sm hover:-translate-y-px"
                     onClick={() => { setRecordTemplate(treatmentContinuityTemplate); setIsAddModalOpen(true); }}>
                     🔄 Continuidade de Tratamento
                   </button>
-                  <button className="w-full text-left p-2 text-sm hover:bg-red-50 rounded border border-gray-200"
+                  <button className="w-full text-left p-2 text-sm hover:bg-red-50 rounded border border-gray-200 transition-all duration-200 hover:shadow-sm hover:-translate-y-px"
                     onClick={() => { setRecordTemplate(dentalEmergencyTemplate); setIsAddModalOpen(true); }}>
                     🚨 Urgência Odontológica
                   </button>
-                  <button className="w-full text-left p-2 text-sm hover:bg-purple-50 rounded border border-gray-200"
+                  <button className="w-full text-left p-2 text-sm hover:bg-purple-50 rounded border border-gray-200 transition-all duration-200 hover:shadow-sm hover:-translate-y-px"
                     onClick={() => { setRecordTemplate(cleaningTemplate); setIsAddModalOpen(true); }}>
                     🧽 Limpeza e Profilaxia
                   </button>

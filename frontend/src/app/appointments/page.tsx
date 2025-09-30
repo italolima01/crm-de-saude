@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { AddAppointmentModal } from "@/components/appointments/add-appointment-modal";
 import { WeekView } from "@/components/appointments/week-view";
 import { MonthView } from "@/components/appointments/month-view";
 import { RescheduleAppointmentModal } from "@/components/appointments/reschedule-appointment-modal";
 import { useAuth } from "@/contexts/auth-context";
 import { mockUsers } from "@/contexts/auth-context";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -216,14 +216,14 @@ export default function AppointmentsPage() {
             </DropdownMenuContent>
           </DropdownMenu>
           <Button onClick={() => handleOpenModal()}>
-            <Plus className="mr-2 h-4 w-4" />
-            Novo Agendamento
+             <Plus className="mr-2 h-4 w-4" />
+             Novo Agendamento
           </Button>
         </div>
       </div>
 
       {/* Date Navigation */}
-      <Card>
+      <Card className="transition-all duration-200 hover:shadow-lg">
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -273,7 +273,7 @@ export default function AppointmentsPage() {
           ) : viewMode === 'week' ? (
             <WeekView appointments={filteredAppointments} currentDate={currentDate} parseDate={parseDate} handleStatusChange={handleStatusChange} hasPermission={hasPermission} />
           ) : (
-            <Card>
+            <Card className="transition-all duration-200 hover:shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Calendar className="mr-2 h-5 w-5" />
@@ -323,7 +323,7 @@ export default function AppointmentsPage() {
                               </div>
                             </div>
                           ) : (
-                            <div className="p-3 border-2 border-dashed border-gray-200 rounded-lg text-center text-gray-400 hover:border-blue-300 hover:text-blue-500 cursor-pointer transition-colors" onClick={() => handleOpenModal(time)}>
+                            <div className="p-3 border-2 border-dashed border-gray-200 rounded-lg text-center text-gray-400 hover:border-blue-300 hover:text-blue-500 cursor-pointer transition-all duration-200 hover:shadow-sm hover:-translate-y-px" onClick={() => handleOpenModal(time)}>
                               <Plus className="h-4 w-4 mx-auto mb-1" />
                               <span className="text-xs">Disponível</span>
                             </div>
@@ -341,7 +341,7 @@ export default function AppointmentsPage() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Today's Summary */}
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader>
               <CardTitle className="text-lg">Resumo do Período</CardTitle>
             </CardHeader>
@@ -384,7 +384,7 @@ export default function AppointmentsPage() {
           </Card>
 
           {/* Quick Actions */}
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader>
               <CardTitle className="text-lg">Ações Rápidas</CardTitle>
             </CardHeader>
@@ -407,7 +407,7 @@ export default function AppointmentsPage() {
           </Card>
 
           {/* Next Appointments */}
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader>
               <CardTitle className="text-lg">Próximas Consultas</CardTitle>
             </CardHeader>

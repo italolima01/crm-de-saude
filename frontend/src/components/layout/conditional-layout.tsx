@@ -28,7 +28,9 @@ export default function ConditionalLayout({ children }: ConditionalLayoutProps) 
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
-        <main className="flex-1 p-6">{children}</main>
+        <main key={pathname} className="flex-1 p-6 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+          {children}
+        </main>
       </div>
     </div>
   );

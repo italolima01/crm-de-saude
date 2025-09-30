@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"; 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -36,6 +36,23 @@ export default function LoginPage() {
     }
   };
 
+  const handleDemoLogin = async (user: any) => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const success = await login(user.email, user.password);
+      if (success) {
+        router.push("/");
+      } else {
+        setError("Falha ao fazer login com usuário demo.");
+      }
+    } catch (err) {
+      setError("Erro ao fazer login");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const demoUsers = [
     { email: "dev@sistema.com", role: "Desenvolvedor", password: "123456" },
     { email: "admin@sistema.com", role: "Admin Sistema", password: "123456" },
@@ -45,7 +62,7 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 animate-in fade-in-0 duration-500">
       <div className="max-w-6xl w-full">
         <div className="text-center mb-8">
           <h2 className="text-4xl font-extrabold text-gray-900">
@@ -58,7 +75,7 @@ export default function LoginPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Login Form */}
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader>
               <CardTitle className="text-xl">Fazer Login</CardTitle>
             </CardHeader>
@@ -112,14 +129,19 @@ export default function LoginPage() {
                   className="w-full h-12 text-lg" 
                   disabled={isLoading}
                 >
-                  {isLoading ? "Entrando..." : "Entrar"}
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Entrando...
+                    </>
+                  ) : "Entrar"}
                 </Button>
               </form>
             </CardContent>
           </Card>
 
           {/* Demo Users */}
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader>
               <CardTitle className="text-xl text-blue-600">👤 Usuários Demo - Clique para Testar</CardTitle>
             </CardHeader>
@@ -131,10 +153,7 @@ export default function LoginPage() {
                 {demoUsers.map((user, index) => (
                   <button
                     key={user.email}
-                    onClick={() => {
-                      setEmail(user.email);
-                      setPassword(user.password);
-                    }}
+                    onClick={() => handleDemoLogin(user)}
                     className="w-full text-left p-4 hover:bg-blue-50 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-all duration-200"
                   >
                     <div className="flex items-center justify-between">

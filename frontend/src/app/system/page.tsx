@@ -16,7 +16,7 @@ import {
 
 export default function SystemPage() {
   return (
-    <ProtectedRoute role="dev">
+    <ProtectedRoute permission="system:manage">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900">Painel do Sistema</h1>
@@ -34,7 +34,7 @@ export default function SystemPage() {
 
         {/* System Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Clínicas Ativas
@@ -47,7 +47,7 @@ export default function SystemPage() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Usuários Totais
@@ -60,7 +60,7 @@ export default function SystemPage() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Uptime do Sistema
@@ -73,7 +73,7 @@ export default function SystemPage() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Alertas Ativos
@@ -89,7 +89,7 @@ export default function SystemPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* System Health */}
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader>
               <CardTitle>Status do Sistema</CardTitle>
             </CardHeader>
@@ -128,7 +128,7 @@ export default function SystemPage() {
           </Card>
 
           {/* Recent Activities */}
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader>
               <CardTitle>Atividades Recentes</CardTitle>
             </CardHeader>
@@ -164,7 +164,7 @@ export default function SystemPage() {
         </div>
 
         {/* System Actions */}
-        <Card>
+        <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
           <CardHeader>
             <CardTitle>Ações do Sistema</CardTitle>
           </CardHeader>

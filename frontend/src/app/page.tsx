@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
@@ -94,7 +94,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-h1 font-bold text-text-main">Dashboard</h1>
         <div className="flex space-x-3">
           <Button variant="outline" onClick={() => router.push('/appointments')}>
             <Calendar className="mr-2 h-4 w-4" />
@@ -112,16 +112,16 @@ export default function Dashboard() {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.title}>
+            <Card key={stat.title} className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">
+                <CardTitle className="text-base font-normal text-gray-600">
                   {stat.title}
                 </CardTitle>
                 <Icon className={`h-4 w-4 ${stat.color}`} />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-green-600 mt-1">
+                <div className="text-h1 font-bold text-text-main">{stat.value}</div>
+                <p className="text-sm text-green-600 mt-1">
                   {stat.change} em relação ao mês anterior
                 </p>
               </CardContent>
@@ -132,7 +132,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Appointments */}
-        <Card>
+        <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
           <CardHeader>
             <CardTitle className="flex items-center">
               <Clock className="mr-2 h-5 w-5" />
@@ -146,19 +146,19 @@ export default function Dashboard() {
                   key={appointment.id}
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                 >
-                  <div>
-                    <p className="font-medium">{appointment.patient}</p>
-                    <p className="text-sm text-gray-600">{appointment.type}</p>
+                  <div className="text-text-main">
+                    <p className="font-semibold text-base">{appointment.patient}</p>
+                    <p className="text-sm font-normal text-gray-600">{appointment.type}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium">{appointment.time}</p>
+                    <p className="font-medium text-text-main text-base">{appointment.time}</p>
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${
                         appointment.status === "Confirmado"
-                          ? "bg-green-100 text-green-800"
-                          : appointment.status === "Em andamento"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-yellow-100 text-yellow-800"
+                          ? "bg-success/10 text-success"
+                          : appointment.status === "Aguardando"
+                          ? "bg-attention text-attention-foreground"
+                          : "bg-blue-100 text-blue-700"
                       }`}
                     >
                       {appointment.status}
@@ -174,7 +174,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Quick Actions */}
-        <Card>
+        <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
           <CardHeader>
             <CardTitle>Ações Rápidas</CardTitle>
           </CardHeader>
@@ -202,7 +202,7 @@ export default function Dashboard() {
       </div>
 
       {/* Alerts */}
-      <Card>
+      <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
         <CardHeader>
           <CardTitle className="flex items-center text-orange-600">
             <AlertCircle className="mr-2 h-5 w-5" />
@@ -230,7 +230,7 @@ export default function Dashboard() {
       </Card>
 
       {/* Access Level Info */}
-      <Card>
+      <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
         <CardHeader>
           <CardTitle className="flex items-center text-blue-600">
             🔐 Seu Nível de Acesso: {user.role === "medico" ? "🦷 Dentista" : user.role === "atendente" ? "👩‍💻 Recepcionista" : "👨‍💼 " + user.role}

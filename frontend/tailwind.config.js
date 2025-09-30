@@ -9,12 +9,12 @@ module.exports = {
     extend: {
       colors: {
         border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
+        input: "hsl(var(--primary) / 0.1)",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "hsl(var(--primary))", // #005691
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -41,13 +41,27 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        success: "hsl(var(--success))", // #28A745
+        attention: {
+          DEFAULT: "hsl(var(--attention))", // #FFC107
+          foreground: "hsl(var(--attention-foreground))",
+        },
+        'text-main': 'hsl(var(--text-main))', // #212529
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
+        md: "calc(var(--radius) - 2px)", 
         sm: "calc(var(--radius) - 4px)",
       },
+      fontSize: {
+        'h1': '28px',
+      },
+      fontWeight: {
+        'semibold': '600',
+      }
     },
   },
-  plugins: [],
+  plugins: [
+    require("tailwindcss-animate"),
+  ],
 }

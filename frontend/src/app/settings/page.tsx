@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button"; 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { 
   Settings, 
   User,
@@ -37,7 +37,7 @@ export default function SettingsPage() {
       case "general":
         return (
           <div className="space-y-6">
-            <Card>
+            <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
               <CardHeader>
                 <CardTitle>Informações da Clínica</CardTitle>
               </CardHeader>
@@ -106,7 +106,7 @@ export default function SettingsPage() {
 
       case "profile":
         return (
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader>
               <CardTitle>Informações do Usuário</CardTitle>
             </CardHeader>
@@ -147,7 +147,7 @@ export default function SettingsPage() {
 
       case "security":
         return (
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader>
               <CardTitle>Alterar Senha</CardTitle>
             </CardHeader>
@@ -177,7 +177,7 @@ export default function SettingsPage() {
 
       default:
         return (
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader>
               <CardTitle>Em Desenvolvimento</CardTitle>
             </CardHeader>
@@ -201,7 +201,7 @@ export default function SettingsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1">
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg">
             <CardContent className="p-0">
               <nav className="space-y-1">
                 {tabs.map((tab) => {

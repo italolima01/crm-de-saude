@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRouter } from "next/navigation"; 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AddPatientModal } from "@/components/patients/add-patient-modal";
 import { EditPatientModal } from "@/components/patients/edit-patient-modal";
 import { useAuth } from "@/contexts/auth-context";
@@ -210,8 +210,8 @@ export default function PatientsPage() {
                     {patient.avatar}
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">{patient.name}</h3>
-                    <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
+                    <h3 className="font-semibold text-base text-text-main">{patient.name}</h3>
+                    <div className="flex items-center space-x-4 text-sm font-normal text-gray-600 mt-1">
                       <span className="flex items-center">
                         <Mail className="h-3 w-3 mr-1" />
                         {patient.email}
