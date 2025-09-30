@@ -14,6 +14,8 @@ import {
   FileText
 } from "lucide-react";
 
+import { ConsultationsChart } from "@/components/reports/consultations-chart";
+
 export default function ReportsPage() {
   const reports = [
     {
@@ -171,12 +173,7 @@ export default function ReportsPage() {
               <CardTitle className="text-lg">Consultas por Dia</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-40 bg-gray-50 rounded-lg flex items-center justify-center">
-                <div className="text-center text-gray-500">
-                  <BarChart3 className="h-8 w-8 mx-auto mb-2" />
-                  <p className="text-sm">Gráfico de consultas</p>
-                </div>
-              </div>
+              <ConsultationsChart />
             </CardContent>
           </Card>
 

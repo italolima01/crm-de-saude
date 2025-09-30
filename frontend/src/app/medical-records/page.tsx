@@ -21,12 +21,16 @@ import {
   Pill
 } from "lucide-react";
 
+import { FilterMedicalRecordModal } from "@/components/medical-records/filter-medical-record-modal";
+
 export default function MedicalRecordsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [recordTemplate, setRecordTemplate] = useState<any | null>(null);
+  const [filters, setFilters] = useState({ status: "", hasAllergies: "" });
   const [medicalRecords, setMedicalRecords] = useState([
     // Dados dos pacientes com histórico odontológico
     {
@@ -148,10 +152,16 @@ export default function MedicalRecordsPage() {
     setIsViewModalOpen(true);
   };
 
-  const filteredRecords = medicalRecords.filter(record =>
-    record.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.lastDiagnosis.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredRecords = medicalRecords.filter(record => {
+    const searchTermMatch = record.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          record.lastDiagnosis.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const statusMatch = filters.status ? record.status === filters.status : true;
+
+    const allergiesMatch = filters.hasAllergies ? (filters.hasAllergies === 'yes' ? record.allergies.length > 0 : record.allergies.length === 0) : true;
+
+    return searchTermMatch && statusMatch && allergiesMatch;
+  });
 
   const recentEntries = [
     {
@@ -212,7 +222,7 @@ export default function MedicalRecordsPage() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
-                <Button variant="outline">
+                <Button variant="outline" onClick={() => setIsFilterModalOpen(true)}>
                   <Filter className="mr-2 h-4 w-4" />
                   Filtros
                 </Button>
@@ -516,6 +526,12 @@ export default function MedicalRecordsPage() {
           isOpen={isViewModalOpen}
           onClose={() => setIsViewModalOpen(false)}
           record={selectedRecord}
+        />
+
+        <FilterMedicalRecordModal
+          isOpen={isFilterModalOpen}
+          onClose={() => setIsFilterModalOpen(false)}
+          onApply={setFilters}
         />
       </div>
     </ProtectedRoute>
